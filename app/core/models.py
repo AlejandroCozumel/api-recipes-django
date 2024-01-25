@@ -81,8 +81,12 @@ class PricingOption(models.Model):
     )
     option_name = models.CharField(max_length=255)
     option_price = models.DecimalField(max_digits=8, decimal_places=2)
-    special_price = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
-    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    special_price = models.DecimalField(
+        max_digits=8, decimal_places=2, blank=True, null=True
+    )
+    discount_percentage = models.DecimalField(
+        max_digits=5, decimal_places=2, blank=True, null=True
+    )
     includes = models.JSONField(blank=True, null=True)
 
     def __str__(self):

@@ -33,8 +33,12 @@ class PricingOptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PricingOption
-        fields = ['id', 'option_name', 'option_price', 'special_price', 'discount_percentage', 'includes']
+        fields = [
+            'id', 'option_name', 'option_price',
+            'special_price', 'discount_percentage', 'includes'
+        ]
         read_only_fields = ['id']
+
 
 class TourDetailSerializer(TourSerializer):
     """Serializer for tour detail view."""
@@ -42,4 +46,6 @@ class TourDetailSerializer(TourSerializer):
     tags = TagSerializer(many=True, read_only=True)
 
     class Meta(TourSerializer.Meta):
-        fields = TourSerializer.Meta.fields + ['description', 'pricing_options', 'tags']
+        fields = TourSerializer.Meta.fields + [
+            'description', 'pricing_options', 'tags'
+        ]
