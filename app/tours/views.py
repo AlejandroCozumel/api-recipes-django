@@ -49,6 +49,7 @@ class TourViewSet(viewsets.ModelViewSet):
         # Return the created tour
         return tour
 
+
 class CreateRetrieveTagPermission(BasePermission):
     def has_permission(self, request, view):
         if view.action in ['list', 'retrieve']:
@@ -56,6 +57,7 @@ class CreateRetrieveTagPermission(BasePermission):
         elif view.action in ['create', 'update', 'partial_update', 'destroy']:
             return request.user and request.user.is_superuser
         return False
+
 
 class TagViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
                  mixins.RetrieveModelMixin, mixins.UpdateModelMixin,
@@ -81,7 +83,12 @@ class TagViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
+
 
     def destroy(self, request, *args, **kwargs):
         """Delete a tag."""

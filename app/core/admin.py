@@ -50,7 +50,7 @@ class ToursAdminForm(forms.ModelForm):
         model = models.Tours
         fields = '__all__'
         widgets = {
-            'tags': forms.CheckboxSelectMultiple,  # Use CheckboxSelectMultiple widget
+            'tags': forms.CheckboxSelectMultiple,
         }
 
 

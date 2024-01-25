@@ -74,12 +74,10 @@ class Tours(models.Model):
 
         super().save(*args, **kwargs)
 
-        # If there are tags associated with the tour and it's being edited, save them separately
         if self.tags.exists() and is_editing:
             # Detach the tags from the tour
             self.tags.clear()
-            raise PermissionDenied("Tags should not be automatically associated with tours.")
-
+            raise PermissionDenied("Tags should not be automatically associated.")
 
 
 class Tag(models.Model):
