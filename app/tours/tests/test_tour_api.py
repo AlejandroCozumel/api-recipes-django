@@ -29,9 +29,20 @@ def detail_url(tour_id):
 
 def create_superuser():
     """Create and return a sample superuser."""
-    return get_user_model().objects.create_superuser(
-        'admin@example.com',
-        'adminpass123',
+    email = 'admin@example.com'
+    password = 'adminpass123'
+
+    user_model = get_user_model()
+
+    # Check if the user already exists
+    existing_user = user_model.objects.filter(email=email).first()
+    if existing_user:
+        return existing_user
+
+    # Create a new superuser if it doesn't exist
+    return user_model.objects.create_superuser(
+        email=email,
+        password=password,
     )
 
 
@@ -56,11 +67,17 @@ class PublicToursAPITests(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-    def test_auth_required(self):
-        """Test auth is required to call API."""
+    def test_retrieve_tours(self):
+        """Test retrieving a list of Tours is available to all users."""
+        create_tour(user=create_superuser())
+        create_tour(user=create_superuser())
+
         res = self.client.get(TOURS_URL)
 
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        tours = Tours.objects.all().order_by('-id')
+        serializer = TourSerializer(tours, many=True)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
 
 
 class PrivateTourApiTests(TestCase):
