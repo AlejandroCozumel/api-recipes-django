@@ -13,6 +13,7 @@ from tours import views
 
 router = DefaultRouter()
 router.register('tours', views.TourViewSet)
+router.register('tags', views.TagViewSet)
 
 app_name = 'tours'
 

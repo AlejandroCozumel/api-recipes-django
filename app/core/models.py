@@ -73,7 +73,7 @@ class Tours(models.Model):
 
 
 class Tag(models.Model):
-    """Tag for filtering recipes."""
+    """Tag for filtering tours."""
     name = models.CharField(max_length=255)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
