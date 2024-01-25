@@ -74,4 +74,17 @@ class TagViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
             error_response = {'error': 'Only superusers can create tags.'}
             return Response(error_response, status=status.HTTP_403_FORBIDDEN)
 
-        return super().create(request, *args, **kwargs)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def destroy(self, request, *args, **kwargs):
+        """Delete a tag."""
+        if not request.user.is_superuser:
+            error_response = {'error': 'Only superusers can delete tags.'}
+            return Response(error_response, status=status.HTTP_403_FORBIDDEN)
+
+        return super().destroy(request, *args, **kwargs)

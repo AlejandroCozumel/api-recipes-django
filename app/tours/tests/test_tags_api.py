@@ -15,6 +15,11 @@ from tours.serializers import TagSerializer
 TAGS_URL = reverse('tours:tag-list')
 
 
+def detail_url(tag_id):
+    """Create and return a tag detail url."""
+    return reverse('tours:tag-detail', args=[tag_id])
+
+
 def create_user(email='user@example.com', password='testpass123'):
     """Create and return a user."""
     return get_user_model().objects.create_user(email=email, password=password)
@@ -64,3 +69,58 @@ class PrivateTagsApiTests(TestCase):
         serializer = TagSerializer(tags, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+
+
+class TagApiTests(TestCase):
+    """Test tags API."""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.superuser = create_superuser()
+        self.client.force_authenticate(user=self.superuser)
+
+    def test_create_tag_no_super_user(self):
+        """Test creating a new tag no superuser."""
+        payload = {'name': 'Vegan'}
+        # Try to create a tag as a non-superuser
+        non_superuser = create_user(email='test@example.com', password='testpass')
+        self.client.force_authenticate(user=non_superuser)
+        res = self.client.post(TAGS_URL, payload)
+
+        # Expect a 403 Forbidden response
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
+
+    def test_delete_tag_superuser(self):
+        """Test deleting a tag superuser."""
+        # Create a tag for the superuser
+        tag = Tag.objects.create(user=self.superuser, name='Breakfast')
+
+        # Attempt to delete the tag as a superuser
+        url = detail_url(tag.id)
+        res = self.client.delete(url)
+
+        # Expect a 204 No Content response since the superuser can delete
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+
+        # Check that the tag has been deleted
+        tags = Tag.objects.filter(user=self.superuser)
+        self.assertFalse(tags.exists())
+
+
+def test_delete_tag_not_superuser(self):
+        """Test deleting a tag as a non-superuser."""
+        # Create a tag for a non-superuser
+        non_superuser = create_user(email='test@example.com', password='testpass')
+        tag = Tag.objects.create(user=non_superuser, name='Lunch')
+
+        # Attempt to delete the tag as a non-superuser
+        url = detail_url(tag.id)
+        res = self.client.delete(url)
+
+        # Expect a 403 Forbidden response since the user is not a superuser
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
+        # Check that the tag has not been deleted
+        tags = Tag.objects.filter(user=non_superuser)
+        self.assertTrue(tags.exists())
