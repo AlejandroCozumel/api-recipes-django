@@ -77,7 +77,7 @@ class Tours(models.Model):
         if self.tags.exists() and is_editing:
             # Detach the tags from the tour
             self.tags.clear()
-            raise PermissionDenied("Tags should not be automatically associated.")
+            raise PermissionDenied("Tags should not be aut associated.")
 
 
 class Tag(models.Model):

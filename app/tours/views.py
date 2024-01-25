@@ -89,7 +89,6 @@ class TagViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
             headers=headers
         )
 
-
     def destroy(self, request, *args, **kwargs):
         """Delete a tag."""
         if not request.user.is_superuser:
