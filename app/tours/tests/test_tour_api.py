@@ -21,6 +21,7 @@ from tours.serializers import (
 
 TOURS_URL = reverse('tours:tours-list')
 
+
 def detail_url(tour_id):
     """Create and return a tour detail URL."""
     return reverse('tours:tours-detail', args=[tour_id])

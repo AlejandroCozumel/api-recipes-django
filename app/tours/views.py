@@ -32,6 +32,7 @@ class TourViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """Create a new tour."""
         if not self.request.user.is_superuser:
-            return Response({'error': 'Only superusers can create tours.'}, status=status.HTTP_403_FORBIDDEN)
+            error_response = {'error': 'Only superusers can create tours.'}
+            return Response(error_response, status=status.HTTP_403_FORBIDDEN)
 
         serializer.save(user=self.request.user)
