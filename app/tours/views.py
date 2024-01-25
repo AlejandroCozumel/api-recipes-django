@@ -17,7 +17,7 @@ class TourViewSet(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
 
     def get_queryset(self):
-        """Retrieve tours for authenticated user or all tours for unauthenticated user."""
+        """Retrieve tours for authenticated user."""
         user = self.request.user
         if user.is_authenticated:
             return self.queryset.filter(user=user).order_by('-id')
