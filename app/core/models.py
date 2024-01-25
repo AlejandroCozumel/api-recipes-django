@@ -57,7 +57,7 @@ class Tours(models.Model):
     title = models.CharField(max_length=255)
     description = RichTextField()
     time_minutes = models.IntegerField()
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+
     link = models.CharField(max_length=255, blank=True)
     tags = models.ManyToManyField('Tag')
 

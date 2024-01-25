@@ -14,7 +14,7 @@ class TourSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tours
-        fields = ['id', 'title', 'time_minutes', 'price', 'link']
+        fields = ['id', 'title', 'time_minutes', 'link']
         read_only_fields = ['id']
 
 
