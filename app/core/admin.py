@@ -63,6 +63,7 @@ class ToursAdmin(admin.ModelAdmin):
     form = ToursAdminForm
     inlines = [PricingOptionInline]
 
+
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Tours, ToursAdmin)
 admin.site.register(models.Tag)

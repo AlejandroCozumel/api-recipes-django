@@ -97,7 +97,6 @@ class PrivateTourApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
-
     def test_get_tour_detail(self):
         """Test get tour detail."""
         tour = create_tour(user=self.superuser)
