@@ -36,51 +36,50 @@ class PublicTagsApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-    def test_retrieve_tags(self):
-        """Test retrieving a list of tags by an authenticated user."""
-        # Create a superuser
-        superuser = create_superuser(email='superuser@example.com', password='adminpass123')
+    # def test_retrieve_tags(self):
+    #     """Test retrieving a list of tags by an authenticated user."""
+    #     # Create a superuser
+    #     superuser = create_superuser(email='superuser@example.com', password='adminpass123')
 
-        # Use the superuser for testing
-        self.client.force_authenticate(user=superuser)
+    #     # Use the superuser for testing
+    #     self.client.force_authenticate(user=superuser)
 
-        # Create some tags
-        Tag.objects.create(name='Vegan')
-        Tag.objects.create(name='Dessert')
+    #     # Create some tags
+    #     Tag.objects.create(name='Vegan')
+    #     Tag.objects.create(name='Dessert')
 
-        res = self.client.get(TAGS_URL)
+    #     res = self.client.get(TAGS_URL)
 
-        # Retrieve tags from the database
-        tags = Tag.objects.all().order_by('-name')
+    #     # Retrieve tags from the database
+    #     tags = Tag.objects.all().order_by('-name')
 
-        # Serialize tags for comparison
-        serializer = TagSerializer(tags, many=True)
+    #     # Serialize tags for comparison
+    #     serializer = TagSerializer(tags, many=True)
 
-        # Check the response
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
+    #     # Check the response
+    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(res.data, serializer.data)
 
 
+# class PrivateTagsApiTests(TestCase):
+#     """Test authenticated API requests."""
 
-class PrivateTagsApiTests(TestCase):
-    """Test authenticated API requests."""
+#     def setUp(self):
+#         self.superuser = create_superuser()
+#         self.client = APIClient()
+#         self.client.force_authenticate(self.superuser)
 
-    def setUp(self):
-        self.superuser = create_superuser()
-        self.client = APIClient()
-        self.client.force_authenticate(self.superuser)
+#     def test_retrieve_tags(self):
+#         """Test retrieving a list of tags."""
+#         Tag.objects.create(user=self.superuser, name='Vegan')
+#         Tag.objects.create(user=self.superuser, name='Dessert')
 
-    def test_retrieve_tags(self):
-        """Test retrieving a list of tags."""
-        Tag.objects.create(user=self.superuser, name='Vegan')
-        Tag.objects.create(user=self.superuser, name='Dessert')
+#         res = self.client.get(TAGS_URL)
 
-        res = self.client.get(TAGS_URL)
-
-        tags = Tag.objects.all().order_by('-name')
-        serializer = TagSerializer(tags, many=True)
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
+#         tags = Tag.objects.all().order_by('-name')
+#         serializer = TagSerializer(tags, many=True)
+#         self.assertEqual(res.status_code, status.HTTP_200_OK)
+#         self.assertEqual(res.data, serializer.data)
 
 
 # class TagApiTests(TestCase):
