@@ -3,7 +3,6 @@ Views for the tour APIs
 """
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -16,11 +15,14 @@ class TourViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.TourDetailSerializer
     queryset = Tours.objects.all()
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        """Retrieve tours for authenticated user."""
-        return self.queryset.filter(user=self.request.user).order_by('-id')
+        """Retrieve tours for authenticated user or all tours for unauthenticated user."""
+        user = self.request.user
+        if user.is_authenticated:
+            return self.queryset.filter(user=user).order_by('-id')
+        else:
+            return self.queryset.all().order_by('-id')
 
     def get_serializer_class(self):
         """Return the serializer class for request."""
