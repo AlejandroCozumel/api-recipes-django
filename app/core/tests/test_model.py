@@ -72,7 +72,6 @@ class ModelTests(TestCase):
             user=superuser,
             title='Sample Tour name',
             time_minutes=5,
-            price=Decimal('5.50'),
             description='Sample Tour description.',
         )
 

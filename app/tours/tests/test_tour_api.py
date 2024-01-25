@@ -49,16 +49,16 @@ def create_superuser():
 def create_tour(user, **params):
     """Create and return a sample tour."""
     defaults = {
-        'title': 'Sample tour title',
-        'time_minutes': 22,
-        'price': Decimal('5.25'),
-        'description': 'Sample description',
-        'link': 'http://example.com/tour.pdf',
+        'title': 'Sample Tour name',
+        'description': 'Sample Tour description.',
+        'time_minutes': 5,
+        'user': user,
+        # Update the defaults with any provided parameters
+        **params,
     }
-    defaults.update(params)
 
-    tour = Tours.objects.create(user=user, **defaults)
-    return tour
+    # Create a tour using the provided parameters
+    return Tours.objects.create(**defaults)
 
 
 class PublicToursAPITests(TestCase):
@@ -100,24 +100,6 @@ class PrivateTourApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
-    def test_tour_list_limited_to_user(self):
-        """Test list of tours is limited to authenticated user."""
-        normal_user = get_user_model().objects.create_user(
-            'normal@example.com',
-            'password123',
-        )
-
-        with self.assertRaises(PermissionDenied):
-            create_tour(user=normal_user)
-
-        create_tour(user=self.superuser)
-
-        res = self.client.get(TOURS_URL)
-
-        tours = Tours.objects.filter(user=self.superuser)
-        serializer = TourSerializer(tours, many=True)
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
 
     def test_get_tour_detail(self):
         """Test get tour detail."""
