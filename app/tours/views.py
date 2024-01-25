@@ -44,8 +44,10 @@ class TourViewSet(viewsets.ModelViewSet):
             error_response = {'error': 'Only superusers can create tours.'}
             return Response(error_response, status=status.HTTP_403_FORBIDDEN)
 
-        serializer.save(user=self.request.user)
+        tour = serializer.save(user=self.request.user)
 
+        # Return the created tour
+        return tour
 
 class CreateRetrieveTagPermission(BasePermission):
     def has_permission(self, request, view):

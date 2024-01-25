@@ -1,6 +1,7 @@
 """
 Django admin customization.
 """
+from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
@@ -44,6 +45,19 @@ class UserAdmin(BaseUserAdmin):
     )
 
 
+class ToursAdminForm(forms.ModelForm):
+    class Meta:
+        model = models.Tours
+        fields = '__all__'
+        widgets = {
+            'tags': forms.CheckboxSelectMultiple,  # Use CheckboxSelectMultiple widget
+        }
+
+
+class ToursAdmin(admin.ModelAdmin):
+    form = ToursAdminForm
+
+
 admin.site.register(models.User, UserAdmin)
-admin.site.register(models.Tours)
+admin.site.register(models.Tours, ToursAdmin)
 admin.site.register(models.Tag)

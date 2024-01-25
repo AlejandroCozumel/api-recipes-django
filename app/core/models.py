@@ -65,20 +65,26 @@ class Tours(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        # Check if the user creating the tour is a superuser
+        # Check if the user creating or editing the tour is a superuser
         if not self.user.is_superuser:
-            raise PermissionDenied("Only superusers can create tours.")
+            raise PermissionDenied("Only superusers can create or edit tours.")
+
+        # Check if the tour is being edited
+        is_editing = self.pk is not None
 
         super().save(*args, **kwargs)
 
+        # If there are tags associated with the tour and it's being edited, save them separately
+        if self.tags.exists() and is_editing:
+            # Detach the tags from the tour
+            self.tags.clear()
+            raise PermissionDenied("Tags should not be automatically associated with tours.")
+
+
 
 class Tag(models.Model):
-    """Tag for filtering tours."""
+    """Tag to be used for a tour."""
     name = models.CharField(max_length=255)
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-    )
 
     def __str__(self):
         return self.name
