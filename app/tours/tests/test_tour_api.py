@@ -13,10 +13,17 @@ from rest_framework.test import APIClient
 
 from core.models import Tours
 
-from tours.serializers import TourSerializer
+from tours.serializers import (
+    TourSerializer,
+    TourDetailSerializer
+)
 
 
 TOURS_URL = reverse('tours:tours-list')
+
+def detail_url(tour_id):
+    """Create and return a tour detail URL."""
+    return reverse('tours:tours-detail', args=[tour_id])
 
 
 def create_superuser():
@@ -93,3 +100,28 @@ class PrivateTourApiTests(TestCase):
         serializer = TourSerializer(tours, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+
+    def test_get_tour_detail(self):
+        """Test get tour detail."""
+        tour = create_tour(user=self.superuser)
+
+        url = detail_url(tour.id)
+        res = self.client.get(url)
+
+        serializer = TourDetailSerializer(tour)
+        self.assertEqual(res.data, serializer.data)
+
+    def test_create_tour(self):
+        """Test creating a tour."""
+        payload = {
+            'title': 'Sample tour',
+            'time_minutes': 30,
+            'price': Decimal('5.99'),
+        }
+        res = self.client.post(TOURS_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        tour = Tours.objects.get(id=res.data['id'])
+        for k, v in payload.items():
+            self.assertEqual(getattr(tour, k), v)
+        self.assertEqual(tour.user, self.superuser)

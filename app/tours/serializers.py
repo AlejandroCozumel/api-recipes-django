@@ -13,3 +13,10 @@ class TourSerializer(serializers.ModelSerializer):
         model = Tours
         fields = ['id', 'title', 'time_minutes', 'price', 'link']
         read_only_fields = ['id']
+
+
+class TourDetailSerializer(TourSerializer):
+    """Serializer for recipe detail view."""
+
+    class Meta(TourSerializer.Meta):
+        fields = TourSerializer.Meta.fields + ['description']
