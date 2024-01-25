@@ -8,7 +8,6 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
-from django.core.exceptions import PermissionDenied
 
 from ckeditor.fields import RichTextField
 
@@ -95,12 +94,14 @@ class PricingOption(models.Model):
     def save(self, *args, **kwargs):
         # Calculate and set special_price if discount_percentage is provided
         if self.discount_percentage is not None:
-            self.special_price = self.option_price - (self.option_price *
-            (self.discount_percentage / 100))
+            self.special_price = self.option_price - (
+                self.option_price * (self.discount_percentage / 100)
+            )
 
         # Calculate and set discount_percentage if special_price is provided
         elif self.special_price is not None:
-            self.discount_percentage = ((self.option_price - self.special_price)
-            / self.option_price) * 100
+            self.discount_percentage = (
+                (self.option_price - self.special_price) / self.option_price
+            ) * 100
 
         super().save(*args, **kwargs)
