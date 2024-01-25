@@ -18,12 +18,14 @@ from tours.serializers import TourSerializer
 
 TOURS_URL = reverse('tours:tours-list')
 
+
 def create_superuser():
     """Create and return a sample superuser."""
     return get_user_model().objects.create_superuser(
         'admin@example.com',
         'adminpass123',
     )
+
 
 def create_tour(user, **params):
     """Create and return a sample tour."""
@@ -79,7 +81,7 @@ class PrivateTourApiTests(TestCase):
             'normal@example.com',
             'password123',
         )
-      # Wrap the tour creation in a try-except block to handle the PermissionDenied exception
+
         with self.assertRaises(PermissionDenied):
             create_tour(user=normal_user)
 
