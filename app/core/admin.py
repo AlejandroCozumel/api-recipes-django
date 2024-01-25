@@ -45,6 +45,11 @@ class UserAdmin(BaseUserAdmin):
     )
 
 
+class PricingOptionInline(admin.TabularInline):
+    model = models.PricingOption
+    extra = 1
+
+
 class ToursAdminForm(forms.ModelForm):
     class Meta:
         model = models.Tours
@@ -56,7 +61,7 @@ class ToursAdminForm(forms.ModelForm):
 
 class ToursAdmin(admin.ModelAdmin):
     form = ToursAdminForm
-
+    inlines = [PricingOptionInline]
 
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Tours, ToursAdmin)

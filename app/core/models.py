@@ -64,21 +64,6 @@ class Tours(models.Model):
     def __str__(self):
         return self.title
 
-    def save(self, *args, **kwargs):
-        # Check if the user creating or editing the tour is a superuser
-        if not self.user.is_superuser:
-            raise PermissionDenied("Only superusers can create or edit tours.")
-
-        # Check if the tour is being edited
-        is_editing = self.pk is not None
-
-        super().save(*args, **kwargs)
-
-        if self.tags.exists() and is_editing:
-            # Detach the tags from the tour
-            self.tags.clear()
-            raise PermissionDenied("Tags should not be aut associated.")
-
 
 class Tag(models.Model):
     """Tag to be used for a tour."""
@@ -86,3 +71,19 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class PricingOption(models.Model):
+    tour = models.ForeignKey(
+        'Tours',
+        on_delete=models.CASCADE,
+        related_name='pricing_options'
+    )
+    option_name = models.CharField(max_length=255)
+    option_price = models.DecimalField(max_digits=8, decimal_places=2)
+    special_price = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
+    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    includes = models.JSONField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.option_name} - {self.option_price}"

@@ -6,6 +6,7 @@ from rest_framework import serializers
 from core.models import (
     Tours,
     Tag,
+    PricingOption
 )
 
 
@@ -18,17 +19,27 @@ class TourSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
-class TourDetailSerializer(TourSerializer):
-    """Serializer for tour detail view."""
-
-    class Meta(TourSerializer.Meta):
-        fields = TourSerializer.Meta.fields + ['description']
-
-
 class TagSerializer(serializers.ModelSerializer):
     """Serializer for tags."""
 
     class Meta:
         model = Tag
         fields = ('id', 'name')
+        read_only_fields = ['id', 'name']
+
+
+class PricingOptionSerializer(serializers.ModelSerializer):
+    """Serializer for pricing options."""
+
+    class Meta:
+        model = PricingOption
+        fields = ['id', 'option_name', 'option_price', 'special_price', 'discount_percentage', 'includes']
         read_only_fields = ['id']
+
+class TourDetailSerializer(TourSerializer):
+    """Serializer for tour detail view."""
+    pricing_options = PricingOptionSerializer(many=True, read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
+
+    class Meta(TourSerializer.Meta):
+        fields = TourSerializer.Meta.fields + ['description', 'pricing_options', 'tags']
