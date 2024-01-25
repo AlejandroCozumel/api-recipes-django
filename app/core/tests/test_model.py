@@ -1,8 +1,12 @@
 """
 Tests for models.
 """
+from decimal import Decimal
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+
+from core import models
 
 
 class ModelTests(TestCase):
@@ -46,3 +50,26 @@ class ModelTests(TestCase):
 
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
+
+    def test_create_tour(self):
+        """Test creating a tour is successful."""
+        # Create a superuser
+        superuser = get_user_model().objects.create_superuser(
+            'admin@example.com',
+            'adminpass123',
+        )
+
+        # Login as the superuser
+        self.client.login(email='admin@example.com', password='adminpass123')
+
+        # Create a tour using the superuser credentials
+        tour = models.Tours.objects.create(
+            user=superuser,
+            title='Sample Tour name',
+            time_minutes=5,
+            price=Decimal('5.50'),
+            description='Sample Tour description.',
+        )
+
+        # Assert that the created tour has the correct title
+        self.assertEqual(str(tour), tour.title)
