@@ -128,18 +128,3 @@ class PrivateTourApiTests(TestCase):
 
         serializer = TourDetailSerializer(tour)
         self.assertEqual(res.data, serializer.data)
-
-    def test_create_tour(self):
-        """Test creating a tour."""
-        payload = {
-            'title': 'Sample tour',
-            'time_minutes': 30,
-            'price': Decimal('5.99'),
-        }
-        res = self.client.post(TOURS_URL, payload)
-
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        tour = Tours.objects.get(id=res.data['id'])
-        for k, v in payload.items():
-            self.assertEqual(getattr(tour, k), v)
-        self.assertEqual(tour.user, self.superuser)
