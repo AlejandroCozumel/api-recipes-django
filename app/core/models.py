@@ -87,3 +87,14 @@ class PricingOption(models.Model):
 
     def __str__(self):
         return f"{self.option_name} - {self.option_price}"
+
+    def save(self, *args, **kwargs):
+        # Calculate and set special_price if discount_percentage is provided
+        if self.discount_percentage is not None:
+            self.special_price = self.option_price - (self.option_price * (self.discount_percentage / 100))
+
+        # Calculate and set discount_percentage if special_price is provided
+        elif self.special_price is not None:
+            self.discount_percentage = ((self.option_price - self.special_price) / self.option_price) * 100
+
+        super().save(*args, **kwargs)
