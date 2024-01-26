@@ -14,7 +14,11 @@ from tours import views
 router = DefaultRouter()
 router.register('tours', views.TourViewSet)
 router.register('tags', views.TagViewSet)
-router.register('favorite-tours', views.FavoriteTourViewSet, basename='favorite-tours')
+router.register(
+    'favorite-tours',
+    views.FavoriteTourViewSet,
+    basename='favorite-tours'
+)
 
 app_name = 'tours'
 

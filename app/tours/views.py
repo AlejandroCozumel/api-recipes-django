@@ -113,5 +113,7 @@ class FavoriteTourViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         # Ensure the user making the request is the owner of the favorite tour
         if instance.user != self.request.user:
-            return Response({'error': 'You do not have permission to delete this favorite tour.'}, status=status.HTTP_403_FORBIDDEN)
+            error_message = {'error': 'You do not have permission to delete this favorite tour.'}
+            return Response(error_message, status=status.HTTP_403_FORBIDDEN)
+
         instance.delete()
