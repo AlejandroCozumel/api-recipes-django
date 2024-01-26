@@ -109,9 +109,10 @@ class PricingOption(models.Model):
 
 class FavoriteTour(models.Model):
     user = models.ForeignKey(
-    settings.AUTH_USER_MODEL,
-    on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
     )
+
     tour = models.ForeignKey('Tours', on_delete=models.CASCADE)
 
     def __str__(self):
