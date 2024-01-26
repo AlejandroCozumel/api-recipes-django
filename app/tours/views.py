@@ -4,7 +4,8 @@ Views for the tour APIs
 from rest_framework import (
     viewsets,
     mixins,
-    status
+    status,
+    permissions
 )
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
@@ -13,6 +14,7 @@ from rest_framework.permissions import BasePermission
 from core.models import (
     Tours,
     Tag,
+    FavoriteTour
 )
 from tours import serializers
 
@@ -94,3 +96,22 @@ class TagViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
             return Response(error_response, status=status.HTTP_403_FORBIDDEN)
 
         return super().destroy(request, *args, **kwargs)
+
+
+class FavoriteTourViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.FavoriteTourSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return FavoriteTour.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        # Set the user based on the authenticated user
+        serializer.save(user=self.request.user)
+
+    def perform_destroy(self, instance):
+        # Ensure the user making the request is the owner of the favorite tour
+        if instance.user != self.request.user:
+            return Response({'error': 'You do not have permission to delete this favorite tour.'}, status=status.HTTP_403_FORBIDDEN)
+        instance.delete()

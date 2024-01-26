@@ -105,3 +105,11 @@ class PricingOption(models.Model):
             ) * 100
 
         super().save(*args, **kwargs)
+
+
+class FavoriteTour(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    tour = models.ForeignKey('Tours', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user} - {self.tour}"

@@ -6,7 +6,8 @@ from rest_framework import serializers
 from core.models import (
     Tours,
     Tag,
-    PricingOption
+    PricingOption,
+    FavoriteTour
 )
 
 
@@ -49,3 +50,10 @@ class TourDetailSerializer(TourSerializer):
         fields = TourSerializer.Meta.fields + [
             'description', 'pricing_options', 'tags'
         ]
+
+
+class FavoriteTourSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FavoriteTour
+        fields = ['id', 'user', 'tour']
+        read_only_fields = ['id']
